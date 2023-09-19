@@ -6,7 +6,7 @@ sed -i "s/;bind_address = 127.0.0.1/bind_address = 0.0.0.0/" /opt/couchdb/etc/lo
 
 # Add admin user and password to the configuration
 # echo "[admins]" >> /opt/couchdb/etc/local.ini
-echo "$ADMIN_USER = $ADMIN_PASSWORD" >> /opt/couchdb/etc/local.ini
+echo "$COUCHDB_USER = $COUCHDB_PASSWORD" >> /opt/couchdb/etc/local.ini
 
 echo
 cat /opt/couchdb/etc/local.ini

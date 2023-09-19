@@ -17,6 +17,7 @@ services:
     # https://hub.docker.com/_/couchdb
     image: couchdb:latest
     container_name: "${DB_CONTAINER_NAME:-couchdb}"
+    command: ["bash", "/opt/couchdb/set-port.sh"]
     environment:
       COUCHDB_USER: "${DB_USERNAME}"
       COUCHDB_PASSWORD: "${DB_PASSWORD}"
@@ -27,6 +28,8 @@ services:
      - ${PORT:-5984}:5984
     volumes:
       - couchdb_data:/opt/couchdb/data
+      - ./create-databases.sh:/opt/couchdb/create-databases.sh
+      - ./set-port.sh:/opt/couchdb/create-databases.sh
 
 # The Docker networks.
 networks:

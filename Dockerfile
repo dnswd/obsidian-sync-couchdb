@@ -1,4 +1,4 @@
-FROM couchdb
+FROM couchdb:latest
 
 # Add a script that will modify the CouchDB configuration with the desired port
 COPY set-port.sh create-databases.sh /opt/couchdb/

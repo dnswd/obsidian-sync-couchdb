@@ -2,7 +2,7 @@
 #!/bin/bash
 
 # CouchDB URL
-COUCHDB_URL="http://$ADMIN_USER:$ADMIN_PASSWORD@localhost:$PORT"
+COUCHDB_URL="http://$COUCHDB_USER:$COUCHDB_PASSWORD@localhost:$PORT"
 
 # List of databases to create
 DATABASES=("_users" "_replicator" "_global_changes") 
@@ -20,14 +20,20 @@ for db in "${DATABASES[@]}"; do
 done
 
 # Setup obsidian livesync
-curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/chttpd/require_valid_user" -H "Content-Type: application/json" -d '"true"' --user "${ADMIN_USER}:${ADMIN_PASSWORD}"
-curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/chttpd_auth/require_valid_user" -H "Content-Type: application/json" -d '"true"' --user "${ADMIN_USER}:${ADMIN_PASSWORD}"
-curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/httpd/WWW-Authenticate" -H "Content-Type: application/json" -d '"Basic realm=\"couchdb\""' --user "${ADMIN_USER}:${ADMIN_PASSWORD}"
-curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/httpd/enable_cors" -H "Content-Type: application/json" -d '"true"' --user "${ADMIN_USER}:${ADMIN_PASSWORD}"
-curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/chttpd/enable_cors" -H "Content-Type: application/json" -d '"true"' --user "${ADMIN_USER}:${ADMIN_PASSWORD}"
-curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/chttpd/max_http_request_size" -H "Content-Type: application/json" -d '"4294967296"' --user "${ADMIN_USER}:${ADMIN_PASSWORD}"
-curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/couchdb/max_document_size" -H "Content-Type: application/json" -d '"50000000"' --user "${ADMIN_USER}:${ADMIN_PASSWORD}"
-curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/cors/credentials" -H "Content-Type: application/json" -d '"true"' --user "${ADMIN_USER}:${ADMIN_PASSWORD}"
-curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/cors/origins" -H "Content-Type: application/json" -d '"app://obsidian.md,capacitor://localhost,http://localhost"' --user "${ADMIN_USER}:${ADMIN_PASSWORD}"
+DEFAULT_ORIGINS="app://obsidian.md,capacitor://localhost,http://localhost"
+if [ -n "$MACHINE_IP" ]; then
+  DEFAULT_ORIGINS="$DEFAULT_ORIGINS,http://$MACHINE_IP,capacitor://$MACHINE_IP"
+fi
+
+curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/chttpd/require_valid_user" -H "Content-Type: application/json" -d '"true"' --user "${COUCHDB_USER}:${COUCHDB_PASSWORD}"
+curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/chttpd_auth/require_valid_user" -H "Content-Type: application/json" -d '"true"' --user "${COUCHDB_USER}:${COUCHDB_PASSWORD}"
+curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/httpd/WWW-Authenticate" -H "Content-Type: application/json" -d '"Basic realm=\"couchdb\""' --user "${COUCHDB_USER}:${COUCHDB_PASSWORD}"
+curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/httpd/enable_cors" -H "Content-Type: application/json" -d '"true"' --user "${COUCHDB_USER}:${COUCHDB_PASSWORD}"
+curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/chttpd/enable_cors" -H "Content-Type: application/json" -d '"true"' --user "${COUCHDB_USER}:${COUCHDB_PASSWORD}"
+curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/chttpd/max_http_request_size" -H "Content-Type: application/json" -d '"4294967296"' --user "${COUCHDB_USER}:${COUCHDB_PASSWORD}"
+curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/couchdb/max_document_size" -H "Content-Type: application/json" -d '"50000000"' --user "${COUCHDB_USER}:${COUCHDB_PASSWORD}"
+curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/cors/credentials" -H "Content-Type: application/json" -d '"true"' --user "${COUCHDB_USER}:${COUCHDB_PASSWORD}"
+curl -X PUT "$COUCHDB_URL/_node/nonode@nohost/_config/cors/origins" -H "Content-Type: application/json" -d "\"$DEFAULT_ORIGINS\"" --user "${COUCHDB_USER}:${COUCHDB_PASSWORD}"
+
 
 echo "Databases created successfully."
