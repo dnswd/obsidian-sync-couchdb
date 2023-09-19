@@ -21,6 +21,7 @@ services:
     environment:
       COUCHDB_USER: "${DB_USERNAME}"
       COUCHDB_PASSWORD: "${DB_PASSWORD}"
+      PORT: "${PORT:-5984}"
     networks:
       - local
     # Map the database container exposed port to the host port.
