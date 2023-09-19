@@ -29,7 +29,7 @@ services:
     volumes:
       - couchdb_data:/opt/couchdb/data
       - ./create-databases.sh:/opt/couchdb/create-databases.sh
-      - ./set-port.sh:/opt/couchdb/create-databases.sh
+      - ./set-port.sh:/opt/couchdb/set-port.sh
 
 # The Docker networks.
 networks:
